@@ -4,8 +4,9 @@ import path from 'path';
 import { nanoid } from 'nanoid';
 
 const contactsPath = path.resolve("models", "contacts.json");
-
+console.log(contactsPath)
 const listContacts = async () => {
+  
   const data = await fs.readFile(contactsPath, "utf-8");
     return JSON.parse(data);
 }
