@@ -1,6 +1,6 @@
 import  express  from 'express';
 import contactsService from '../../models/contacts.js';
-import { HttpError } from '../../helpers/httpError.js';
+import { HttpError } from '../../helpers/index.js';
 import Joi from 'joi';
 
 const router = express.Router()
@@ -27,10 +27,10 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:contactId', async (req, res, next) => {
   try {
-    const {id}=req.params;
-    const result=await contactsService.getContactById(id);
+    const {contactId}=req.params;
+    const result=await contactsService.getContactById(contactId);
     if(!result){
-      throw HttpError(404,`Contact with id=${id} does not exist`)
+      throw HttpError(404,`Contact with id=${contactId} does not exist`)
     }
     res.json(result)
   } catch (error) {
@@ -44,8 +44,8 @@ router.post('/', async (req, res, next) => {
   try {
     const{error}=contactAddSchema.validate(req.body);
     if(error){
-      throw HttpError
-    }(400,error.message)
+      throw HttpError(400,error.message)
+    }
     const result=await contactsService.addContact(req.body)
     res.status(201).json(result)
   } catch (error) {
@@ -59,10 +59,11 @@ router.post('/', async (req, res, next) => {
 
 router.delete('/:contactId', async (req, res, next) => {
   try {
-    const {id}=req.params;
-    const result=await contactsService.removeContact(id)
+    const {contactId}=req.params;
+    console.log(contactId)
+    const result=await contactsService.removeContact(contactId)
     if(!result){
-      throw HttpError(404,`Contact with id=${id} does not exist`)
+      throw HttpError(404,`Contact with id=${contactId} does not exist`)
     }
     res.json({
       message:'deleted successfully'
@@ -80,12 +81,12 @@ router.put('/:contactId', async (req, res, next) => {
   try {
     const{error}=contactAddSchema.validate(req.body);
     if(error){
-      throw HttpError
-    }(400,error.message)
-    const {id}=req.params;
-    const result =await contactsService.updateContact(id)
+      throw HttpError(400,error.message)
+    }
+    const {contactId}=req.params;
+    const result =await contactsService.updateContact(contactId)
     if(!result){
-      throw HttpError(404,`Contact with id=${id} does not exist`)
+      throw HttpError(404,`Contact with id=${contactId} does not exist`)
     }
     res.json(result)
   } catch (error) {
