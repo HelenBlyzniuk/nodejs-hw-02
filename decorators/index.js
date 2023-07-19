@@ -1,0 +1,1 @@
+export {default as ctrlWrapper} from './contacts-decorator.js'
