@@ -84,7 +84,7 @@ router.put('/:contactId', async (req, res, next) => {
       throw HttpError(400,error.message)
     }
     const {contactId}=req.params;
-    const result =await contactsService.updateContact(contactId)
+    const result =await contactsService.updateContact(contactId,req.body)
     if(!result){
       throw HttpError(404,`Contact with id=${contactId} does not exist`)
     }
@@ -94,5 +94,7 @@ router.put('/:contactId', async (req, res, next) => {
   }
  
 })
+
+
 
 export default router

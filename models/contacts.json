@@ -1,8 +1,5 @@
 [
   {
-    "contactId": "AeHIrLTr6JkxGE6SN-0Rw"
-  },
-  {
     "id": "qdggE76Jtbfd9eWJHrssH",
     "name": "Chaim Lewis",
     "email": "dui.in@egetlacus.ca",
@@ -59,11 +56,9 @@
     }
   },
   {
-    "id": "LqrPmDv4WEmfu7Q-MfQ_T",
-    "body": {
-      "name": "Lena Lena",
-      "email": "dui.Fusce.diam@Donec.com",
-      "phone": "(233) 738-2360"
-    }
+    "contactId": "LqrPmDv4WEmfu7Q-MfQ_T",
+    "name": "Lena Ania",
+    "email": "dui.Fusce.diam@Donec.com",
+    "phone": "(233) 738-2360"
   }
 ]
