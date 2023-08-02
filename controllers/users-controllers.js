@@ -49,12 +49,33 @@ const login=async(req,res)=>{
     }
 
   
-    const token=jwt.sign(payload,JWT_SECRET,{expiresIn:"23h"})
+    const token=jwt.sign(payload,JWT_SECRET,{expiresIn:"23h"});
+    await User.findByIdAndUpdate(user._id, {token});
     res.json({
         token,
+    })
+}
+
+
+const logout=async(req,res)=>{
+    const {_id}=req.user;
+    await User.findByIdAndUpdate(_id,{token:''});
+    res.status(204).json({
+        message:'Logout success'
+    })
+}
+
+
+const getCurrent=async(req,res)=>{
+    const{email}=req.user;
+    res.status(200).json({
+        email,
+        subscription,
     })
 }
 export default{
     signup:ctrlWrapper(signup),
     login:ctrlWrapper(login),
+    logout:ctrlWrapper(logout),
+    getCurrent:ctrlWrapper(getCurrent),
 }
