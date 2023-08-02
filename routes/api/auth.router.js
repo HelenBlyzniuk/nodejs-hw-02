@@ -5,5 +5,7 @@ import userControllers from '../../controllers/users-controllers.js';
 
 const authRouter=express.Router()
 
-authRouter.post("/signup",userControllers.signup )
+authRouter.post("/register",userControllers.signup);
+
+authRouter.post("/login",userControllers.login)
 export default authRouter;
