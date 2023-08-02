@@ -7,7 +7,8 @@ import {contactAddSchema, contactFavoriteSchema} from "../Schema/contactSchema.j
 import Contact from "../models/contacts.js";
 
 const getAll = async (req, res) => {
-  const result = await Contact.find();
+  const {_id: owner} = req.user;
+  const result = await Contact.find({owner},"-createdAt -updatedAt");
   res.json(result);
 };
 
