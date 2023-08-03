@@ -26,7 +26,6 @@ const getById = async (req, res) => {
 const add = async (req, res) => {
   validateBody(contactAddSchema);
   const {_id: owner} = req.user;
-  console.log(req.user);
   const result = await Contact.create({...req.body,owner});
   res.status(201).json(result);
 };

@@ -15,10 +15,12 @@ const contactSchema=new Schema({
   email:{
     type:String,
     match:/.+\@.+\..+/,
+    required:true,
   },
   phone:{
     type:String,
     match:/^(\()?\d{3}(\))?(-|\s)?\d{3}(-|\s)\d{4}$/,
+    required:true,
   }
 },{versionKey:false,timestamps:true});
 
