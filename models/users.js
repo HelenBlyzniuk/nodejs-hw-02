@@ -1,44 +1,44 @@
-import {Schema,model} from 'mongoose';
-import { handleSaveError,handleUpdate } from '../hooks/hooks.js';
+import { Schema, model } from "mongoose";
+import { handleSaveError, handleUpdate } from "../hooks/hooks.js";
 
-
-const userSchema=new Schema({
+const userSchema = new Schema(
+  {
     password: {
-        type: String,
-        required: [true, 'Set password for user'],
-        minlength:6,
-      },
-      email: {
-        type: String,
-        match:/.+\@.+\..+/,
-        required: [true, 'Email is required'],
-        unique: true,
-      },
-      subscription: {
-        type: String,
-        enum: ["starter", "pro", "business"],
-        default: "starter"
-      },
-      token: {
-        type:String,
-
+      type: String,
+      required: [true, "Set password for user"],
+      minlength: 6,
     },
-    owner:{
-     type: Schema.Types.ObjectId,
-      ref: 'user',
+    email: {
+      type: String,
+      match: /.+\@.+\..+/,
+      required: [true, "Email is required"],
+      unique: true,
     },
-    avatarURL:{
-      type:String,
-    }
+    subscription: {
+      type: String,
+      enum: ["starter", "pro", "business"],
+      default: "starter",
+    },
+    token: {
+      type: String,
+    },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    },
+    avatarURL: {
+      type: String,
+    },
+  },
+  { versionKey: false, timestamps: true }
+);
 
-},{versionKey:false,timestamps:true})
+userSchema.pre("findOneAndUpdate", handleUpdate);
 
-userSchema.pre('findOneAndUpdate',handleUpdate);
+userSchema.post("save", handleSaveError);
 
-userSchema.post('save',handleSaveError);
+userSchema.post("findOneAndUpdate", handleSaveError);
 
-userSchema.post("findOneAndUpdate",handleSaveError);
-
-const User=model('user',userSchema);
+const User = model("user", userSchema);
 
 export default User;

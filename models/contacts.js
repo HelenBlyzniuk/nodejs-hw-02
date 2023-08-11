@@ -31,4 +31,5 @@ contactSchema.post('save',handleSaveError);
 contactSchema.post("findOneAndUpdate", handleSaveError);
 
 const Contact=model('contact',contactSchema);
+
 export default Contact;
