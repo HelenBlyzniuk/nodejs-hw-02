@@ -1,6 +1,9 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import "dotenv/config";
+import fs from 'fs/promises';
+import path from 'path';
+import gravatar from 'gravatar';
 
 import User from "../models/users.js";
 import { HttpError } from "../helpers/index.js";
@@ -12,21 +15,27 @@ import { userSignupSchema } from "../Schema/userSchema.js";
 
 
 const{JWT_SECRET}=process.env;
+const avatarPath=path.resolve("public", "avatars");
+
 const signup=async(req,res)=>{
     validateBody(userSignupSchema);
-    const {password}=req.body;
+    const {password,email}=req.body;
+    const{path:oldPath,filename}=req.file;
+    const newPath=path.join(avatarPath,filename);
+
     const hashPassword=await bcrypt.hash(password,10)
-    const {email}=req.body;
+    const avatarURL=gravatar.url(email);
     const user=await User.findOne({email})
     if(user){
         throw HttpError(409, "Email in use")
     }
 
     
-    const newUser=await User.create({...req.body,password:hashPassword});
+    const newUser=await User.create({...req.body,password:hashPassword,avatarURL});
     res.status(201).json({
     email:newUser.email,
-    subscription:newUser.subscription
+    subscription:newUser.subscription,
+    avatarURL:newUser.avatarURL,
     })
 }
 
