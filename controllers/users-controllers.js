@@ -20,8 +20,8 @@ const avatarPath=path.resolve("public", "avatars");
 const signup=async(req,res)=>{
     validateBody(userSignupSchema);
     const {password,email}=req.body;
-    const{path:oldPath,filename}=req.file;
-    const newPath=path.join(avatarPath,filename);
+    // const{path:oldPath,filename}=req.file;
+    // const newPath=path.join(avatarPath,filename);
 
     const hashPassword=await bcrypt.hash(password,10)
     const avatarURL=gravatar.url(email);
