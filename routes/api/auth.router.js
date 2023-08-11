@@ -7,12 +7,14 @@ import { upload } from "../../middlewares/upload.js";
 
 const authRouter=express.Router()
 
-authRouter.post("/register",upload.single("avatars"),userControllers.signup);
+authRouter.post("/register",userControllers.signup);
 
 authRouter.post("/login",userControllers.login);
 
 authRouter.post('/logout',authenticate,userControllers.logout);
 
 authRouter.get('/current',authenticate, userControllers.getCurrent);
+
+authRouter.patch('/avatars',upload.single("avatars"),authenticate,userControllers.updateAvatar)
 
 export default authRouter;

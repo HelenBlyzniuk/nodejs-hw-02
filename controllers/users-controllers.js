@@ -4,6 +4,7 @@ import "dotenv/config";
 import fs from 'fs/promises';
 import path from 'path';
 import gravatar from 'gravatar';
+import Jimp from 'jimp';
 
 import User from "../models/users.js";
 import { HttpError } from "../helpers/index.js";
@@ -82,9 +83,30 @@ const getCurrent=async(req,res)=>{
         subscription,
     })
 }
+
+
+const updateAvatar=async(req,res)=>{
+    const { _id } = req.user;
+    if(!req.file){
+        throw HttpError(400,"missing field avatar")
+    }
+     const{path:oldPath,filename}=req.file;
+    await Jimp.read(oldPath).then((img)=>img.resize(250,250)).write(`${oldPath}`);
+    const uniquePrefix=`${Date.now()}-${Math.round(Math.random() * 1E9)}`;
+    const fileOriginalname=`${uniquePrefix}_${filename}`
+    const newPath=path.join(avatarPath,fileOriginalname);
+    await fs.rename(oldPath,newPath);
+    const avatarURL=path.join("avatars", fileOriginalname);
+    await User.findByIdAndUpdate(_id,{avatarURL});
+    if (!avatarURL) throw HttpError(404, "Not found");
+
+     res.json({ avatarURL });
+
+}
 export default{
     signup:ctrlWrapper(signup),
     login:ctrlWrapper(login),
     logout:ctrlWrapper(logout),
     getCurrent:ctrlWrapper(getCurrent),
+    updateAvatar:ctrlWrapper(updateAvatar),
 }
