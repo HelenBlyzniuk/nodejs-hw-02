@@ -10,12 +10,13 @@ const nodemailerConfig={
     auth: {
         
         user:UKR_NET_EMAIL,
-        pass:UKR_NET_PASSWORD
+        pass:UKR_NET_PASSWORD,
     }
 }
 
 
 const transport =nodemailer.createTransport(nodemailerConfig)
+
 
 export const sendEmail = data => {
     const email = {...data, from: UKR_NET_EMAIL};

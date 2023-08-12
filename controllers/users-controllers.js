@@ -11,7 +11,7 @@ import { HttpError } from "../helpers/index.js";
 import { validateBody } from "../decorators/validateBody.js";
 
 import ctrlWrapper from "../decorators/contacts-decorator.js";
-import { userSignupSchema } from "../Schema/userSchema.js";
+import { userSignupSchema,userEmailVerificationSchema } from "../Schema/userSchema.js";
 import { nanoid } from "nanoid";
 import { sendEmail } from "../helpers/sendEmail.js";
 import { createVerifyEmail } from "../helpers/createVerifyEmail.js";
@@ -31,9 +31,9 @@ const signup = async (req, res) => {
     throw HttpError(409, "Email in use");
   }
 
-  if(!user.verify){
-    throw HttpError(401, "Email is not verified")
-  }
+  // if(!user.verify){
+  //   throw HttpError(401, "Email is not verified")
+  // }
 
   const newUser = await User.create({
     ...req.body,
@@ -58,8 +58,12 @@ const verify=async(req,res)=>{
   if(!user){
     throw HttpError(404, "Email not found")
   }
+  if(user.verify){
+    throw HttpError(400, "Verification has already been passed")
+  }
+  
 
-await User.findByIdAndUpdate(user_id,{verify:true, verificationToken:''});
+await User.findByIdAndUpdate(user._id,{verify:true, verificationToken:''});
 res.status(200).json({
   message: 'Verification successful',
 })
