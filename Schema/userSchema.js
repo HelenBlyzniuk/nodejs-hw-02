@@ -6,3 +6,7 @@ export const userSignupSchema=Joi.object({
 
 });
 
+export const userEmailVerificationSchema=Joi.object({
+    email:Joi.string().pattern(/.+\@.+\..+/).required(),
+
+});

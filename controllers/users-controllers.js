@@ -12,31 +12,80 @@ import { validateBody } from "../decorators/validateBody.js";
 
 import ctrlWrapper from "../decorators/contacts-decorator.js";
 import { userSignupSchema } from "../Schema/userSchema.js";
+import { nanoid } from "nanoid";
+import { sendEmail } from "../helpers/sendEmail.js";
+import { createVerifyEmail } from "../helpers/createVerifyEmail.js";
+
 
 const { JWT_SECRET } = process.env;
 const avatarPath = path.resolve("public", "avatars");
-console.log(avatarPath);
+
 const signup = async (req, res) => {
   validateBody(userSignupSchema);
   const { password, email } = req.body;
   const hashPassword = await bcrypt.hash(password, 10);
   const avatarURL = gravatar.url(email);
+  const verificationToken = nanoid();
   const user = await User.findOne({ email });
   if (user) {
     throw HttpError(409, "Email in use");
+  }
+
+  if(!user.verify){
+    throw HttpError(401, "Email is not verified")
   }
 
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
     avatarURL,
+    verificationToken,
   });
+
+ 
+
+  await sendEmail(createVerifyEmail({email,verificationToken}));
   res.status(201).json({
     email: newUser.email,
     subscription: newUser.subscription,
     avatarURL: newUser.avatarURL,
   });
 };
+
+const verify=async(req,res)=>{
+  const {verificationToken}=req.params;
+  const user=await User.findOne({verificationToken})
+  if(!user){
+    throw HttpError(404, "Email not found")
+  }
+
+await User.findByIdAndUpdate(user_id,{verify:true, verificationToken:''});
+res.status(200).json({
+  message: 'Verification successful',
+})
+}
+
+const resendVerifyEmail=async(req,res)=>{
+validateBody(userEmailVerificationSchema);
+const {email}=req.body;
+const user=await User.findOne({email});
+if(!user){
+  throw HttpError(404, "Email not found")
+}
+
+if(user.verify){
+  throw HttpError(400, "Verification has already been passed")
+}
+
+
+
+await sendEmail(createVerifyEmail({email,verificationToken:user.verificationToken}));
+
+res.json({
+  message: "Resend email success"
+})
+
+}
 
 const login = async (req, res) => {
   validateBody(userSignupSchema);
@@ -103,4 +152,6 @@ export default {
   logout: ctrlWrapper(logout),
   getCurrent: ctrlWrapper(getCurrent),
   updateAvatar: ctrlWrapper(updateAvatar),
+  verify:ctrlWrapper(verify),
+  resendVerifyEmail:ctrlWrapper(resendVerifyEmail)
 };
