@@ -42,7 +42,7 @@ const userSchema = new Schema(
   { versionKey: false, timestamps: true }
 );
 
-userSchema.pre("findOneAndUpdate", handleUpdate);
+// userSchema.pre("findOneAndUpdate", handleUpdate);
 
 userSchema.post("save", handleSaveError);
 
